@@ -17,6 +17,9 @@
   --bg-tint:       #FBFAF6;
   --surface:       #FFFFFF;
   --surface-soft:  #FBFAF7;
+  --glass:         rgba(255, 255, 255, .68);
+  --glass-strong:  rgba(255, 255, 255, .82);
+  --glass-edge:    rgba(255, 255, 255, .88);
 
   /* 描边 / 分隔线 */
   --line:          #E8EAE4;
@@ -58,7 +61,10 @@ body {
   font-size: 15px;
   line-height: 1.7;
   color: var(--ink);
-  background: linear-gradient(180deg, var(--bg-tint) 0%, var(--bg) 320px);
+  background:
+    radial-gradient(ellipse at 12% 8%, rgba(164, 201, 181, .20), transparent 34%),
+    radial-gradient(ellipse at 90% 20%, rgba(224, 204, 166, .18), transparent 30%),
+    linear-gradient(180deg, var(--bg-tint) 0%, var(--bg) 520px);
   -webkit-font-smoothing: antialiased;
 }
 
@@ -71,10 +77,11 @@ body {
   padding: 14px var(--page-pad);
   padding-left: max(var(--page-pad), calc((100% - var(--page-max)) / 2 + var(--page-pad)));
   padding-right: max(var(--page-pad), calc((100% - var(--page-max)) / 2 + var(--page-pad)));
-  background: rgba(255, 255, 255, .92);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--line);
+  background: rgba(255, 255, 255, .72);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  backdrop-filter: blur(18px) saturate(150%);
+  border-bottom: 1px solid rgba(255, 255, 255, .82);
+  box-shadow: 0 8px 24px rgba(58, 70, 60, .06);
 }
 /* clearfix：brand 左浮、nav 右浮，父容器不塌陷 */
 .site-header::after { content: ""; display: block; clear: both; }
@@ -122,10 +129,12 @@ body {
 .search-panel {
   padding: 18px 20px;
   margin-bottom: 22px;
-  background: var(--surface);
-  border: 1px solid var(--line);
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  backdrop-filter: blur(16px) saturate(140%);
+  border: 1px solid var(--glass-edge);
   border-radius: var(--radius);
-  box-shadow: var(--shadow-1);
+  box-shadow: var(--shadow-1), inset 0 1px 0 rgba(255, 255, 255, .9);
 }
 .search-form { display: flex; align-items: flex-end; gap: 14px; flex-wrap: wrap; }
 .search-form .field { flex: 1 1 160px; }
@@ -210,10 +219,12 @@ body {
   width: 31.33%;          /* 留出右边距，三列刚好并排 */
   margin: 0 3% 20px 0;
   overflow: hidden;
-  background: var(--surface);
-  border: 1px solid var(--line);
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  backdrop-filter: blur(14px) saturate(140%);
+  border: 1px solid var(--glass-edge);
   border-radius: var(--radius);
-  box-shadow: var(--shadow-1);
+  box-shadow: var(--shadow-1), inset 0 1px 0 rgba(255, 255, 255, .9);
   transition: transform .25s var(--ease), box-shadow .25s, border-color .25s;
 }
 .book-card:hover {
@@ -225,6 +236,7 @@ body {
 
 /* 封面：低饱和色块 + 一个大字，柔和不刺眼 */
 .cover {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -233,6 +245,15 @@ body {
   font-size: 40px;
   color: #fff;
   text-shadow: 0 1px 6px rgba(0, 0, 0, .18);
+  overflow: hidden;
+}
+.cover::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(135deg, rgba(255, 255, 255, .3), transparent 42%, rgba(255, 255, 255, .06));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35);
 }
 .book-card:nth-child(1) .cover { background: linear-gradient(135deg, #6E9C8A, #527F6C); }
 .book-card:nth-child(2) .cover { background: linear-gradient(135deg, #8397BB, #63779B); }
@@ -252,10 +273,12 @@ body {
 .panel {
   padding: 16px 18px;
   margin-bottom: 18px;
-  background: var(--surface);
-  border: 1px solid var(--line);
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  backdrop-filter: blur(14px) saturate(140%);
+  border: 1px solid var(--glass-edge);
   border-radius: var(--radius);
-  box-shadow: var(--shadow-1);
+  box-shadow: var(--shadow-1), inset 0 1px 0 rgba(255, 255, 255, .9);
 }
 .panel h3 {
   margin: 0 0 10px;
@@ -277,8 +300,10 @@ body {
   text-align: center;
   font-size: 13px;
   color: var(--ink-faint);
-  background: var(--surface-soft);
-  border-top: 1px solid var(--line);
+  background: rgba(255, 255, 255, .54);
+  -webkit-backdrop-filter: blur(12px) saturate(135%);
+  backdrop-filter: blur(12px) saturate(135%);
+  border-top: 1px solid var(--glass-edge);
 }
 .site-footer p { margin: 0; }
 
@@ -301,7 +326,11 @@ body {
 /* ===================== 优雅降级 & 无障碍 ===================== */
 /* 不支持 backdrop-filter：页头改为不透明白底 */
 @supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
-  .site-header { background: var(--surface); }
+  .site-header,
+  .search-panel,
+  .book-card,
+  .panel,
+  .site-footer { background: var(--surface); }
 }
 
 /* 尊重系统「减少动态效果」设置 */
