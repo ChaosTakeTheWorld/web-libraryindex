@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>悦读图书 · 图书首页</title>
+  <link href="style.css" rel="stylesheet">
+</head>
+<body>
+  <header class="site-header" id="site-header">
+    <div class="brand">
+      <span class="logo" aria-hidden="true">📚</span>
+      <h1>悦读图书</h1>
+    </div>
+    <nav class="site-nav" id="site-nav" aria-label="主导航">
+      <a class="active" href="#" aria-current="page">首页</a>
+      <a href="#">检索</a>
+      <a href="#">分类</a>
+      <a href="#">关于</a>
+    </nav>
+  </header>
+
+  <div class="layout">
+    <main class="content" id="main-content">
+      <!-- 检索区 -->
+      <section class="search-panel" id="search-panel" aria-label="图书检索">
+        <form action="#" class="search-form" method="get" id="search-form">
+          <div class="field">
+            <label for="keyword">书名关键字</label>
+            <input id="keyword" name="keyword" placeholder="如：三体 / 刘慈欣 / 9787…" required type="text">
+          </div>
+          <div class="field">
+            <label for="category">图书分类</label>
+            <select id="category" name="category">
+              <option value="all">全部</option>
+              <option value="computer">计算机</option>
+              <option value="literature">文学</option>
+            </select>
+          </div>
+          <button class="search-btn" type="submit">检索</button>
+        </form>
+      </section>
+
+      <section class="book-list" id="book-list" aria-labelledby="new-books-title">
+        <h2 class="section-title" id="new-books-title">新书推荐</h2>
+        <div class="cards">
+          <article class="book-card">
+            <div class="cover" aria-hidden="true">三</div>
+            <div class="info">
+              <h3 class="book-title">三体</h3>
+              <p class="book-author">刘慈欣</p>
+              <p class="book-price">¥39.00</p>
+              <button class="add-cart" type="button">加入书架</button>
+            </div>
+          </article>
+
+          <article class="book-card">
+            <div class="cover" aria-hidden="true">活</div>
+            <div class="info">
+              <h3 class="book-title">活着</h3>
+              <p class="book-author">余华</p>
+              <p class="book-price">¥28.00</p>
+              <button class="add-cart" type="button">加入书架</button>
+            </div>
+          </article>
+
+          <article class="book-card">
+            <div class="cover" aria-hidden="true">人</div>
+            <div class="info">
+              <h3 class="book-title">人类简史</h3>
+              <p class="book-author">尤瓦尔·赫拉利</p>
+              <p class="book-price">¥68.00</p>
+              <button class="add-cart" type="button">加入书架</button>
+            </div>
+          </article>
+
+          <article class="book-card">
+            <div class="cover" aria-hidden="true">解</div>
+            <div class="info">
+              <h3 class="book-title">解忧杂货店</h3>
+              <p class="book-author">东野圭吾</p>
+              <p class="book-price">¥35.00</p>
+              <button class="add-cart" type="button">加入书架</button>
+            </div>
+          </article>
+
+          <article class="book-card">
+            <div class="cover" aria-hidden="true">小</div>
+            <div class="info">
+              <h3 class="book-title">小王子</h3>
+              <p class="book-author">圣埃克苏佩里</p>
+              <p class="book-price">¥22.00</p>
+              <button class="add-cart" type="button">加入书架</button>
+            </div>
+          </article>
+
+          <article class="book-card">
+            <div class="cover" aria-hidden="true">百</div>
+            <div class="info">
+              <h3 class="book-title">百年孤独</h3>
+              <p class="book-author">加西亚·马尔克斯</p>
+              <p class="book-price">¥45.00</p>
+              <button class="add-cart" type="button">加入书架</button>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <aside class="sidebar" id="sidebar">
+      <section class="panel" id="categories" aria-labelledby="categories-title">
+        <h3 id="categories-title">图书分类</h3>
+        <ul>
+          <li><a href="#">文学小说</a></li>
+          <li><a href="#">科幻悬疑</a></li>
+          <li><a href="#">历史传记</a></li>
+          <li><a href="#">经管励志</a></li>
+          <li><a href="#">少儿读物</a></li>
+          <li><a href="#">艺术设计</a></li>
+        </ul>
+      </section>
+
+      <section class="panel" id="weekly-hot" aria-labelledby="weekly-hot-title">
+        <h3 id="weekly-hot-title">本周热榜</h3>
+        <ol>
+          <li><a href="#">三体</a></li>
+          <li><a href="#">活着</a></li>
+          <li><a href="#">人类简史</a></li>
+          <li><a href="#">解忧杂货店</a></li>
+          <li><a href="#">小王子</a></li>
+        </ol>
+      </section>
+
+      <section class="panel" id="borrow-notice" aria-labelledby="borrow-notice-title">
+        <h3 id="borrow-notice-title">借阅须知</h3>
+        <ul>
+          <li>借期 30 天，可续借 1 次</li>
+          <li>逾期每天 0.2 元</li>
+          <li>凭校园卡到馆取书</li>
+        </ul>
+      </section>
+    </aside>
+  </div>
+
+  <footer class="site-footer" id="site-footer">
+    <p>© 2026 悦读图书 · 联系:contact@yuedu.example · 仅供课程作业演示</p>
+  </footer>
+</body>
+</html>

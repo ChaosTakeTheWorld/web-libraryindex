@@ -1,0 +1,310 @@
+/* ============================================================
+   style.css —— 悦读图书 首页外部样式表
+   主题：护眼暖白（Eye-friendly Warm White）
+     · 底色用暖调米白，避免纯 #FFF 的强反光
+     · 面板用纯白 + 极浅描边，正文用深灰而非纯黑，降低对比刺激
+     · 全局只保留一个低饱和的「豆绿」强调色，长时间阅读更舒服
+   对应课程知识点：
+     ① 类选择器为主力（.card / .book-card、.panel、.btn …）
+     ② box-sizing: border-box 统一盒模型，加 padding 宽度不超标
+     ③ float 三列并排 + 父容器 clearfix 防塌陷
+   ============================================================ */
+
+/* ===================== 设计令牌 ===================== */
+:root {
+  /* 底色与面板：暖白 → 纯白，层次靠描边和极浅阴影区分，不靠重色块 */
+  --bg:            #F6F7F3;
+  --bg-tint:       #FBFAF6;
+  --surface:       #FFFFFF;
+  --surface-soft:  #FBFAF7;
+
+  /* 描边 / 分隔线 */
+  --line:          #E8EAE4;
+  --line-strong:   #DCE0D7;
+
+  /* 文字：深灰代替纯黑，护眼 */
+  --ink:           #333B3F;
+  --ink-soft:      #737C80;
+  --ink-faint:     #9AA2A5;
+
+  /* 强调色：低饱和豆绿，全站唯一彩色锚点 */
+  --accent:        #4F8C77;
+  --accent-dark:   #3E7461;
+  --accent-soft:   rgba(79, 140, 119, .10);
+  --accent-line:   rgba(79, 140, 119, .28);
+
+  /* 页面容器：顶栏与正文共用同一套左右边界，保证对齐 */
+  --page-max:      1120px;
+  --page-pad:      20px;
+
+  --radius:        14px;
+  --radius-sm:     10px;
+  --shadow-1:      0 2px 10px rgba(58, 70, 60, .06);
+  --shadow-2:      0 10px 28px rgba(58, 70, 60, .11);
+  --ease:          cubic-bezier(.2, .8, .2, 1);
+}
+
+/* 统一盒模型：宽度包含 padding 与 border，算尺寸更直观 */
+* { box-sizing: border-box; }
+
+/* ===================== 页面底色 ===================== */
+html { min-height: 100%; background: var(--bg); }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+               "Microsoft YaHei", "微软雅黑", sans-serif;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--ink);
+  background: linear-gradient(180deg, var(--bg-tint) 0%, var(--bg) 320px);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ===================== 页头 ===================== */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  /* 左右内边距跟随 .layout 的内容边界：顶栏文字与下方正文严格对齐 */
+  padding: 14px var(--page-pad);
+  padding-left: max(var(--page-pad), calc((100% - var(--page-max)) / 2 + var(--page-pad)));
+  padding-right: max(var(--page-pad), calc((100% - var(--page-max)) / 2 + var(--page-pad)));
+  background: rgba(255, 255, 255, .92);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+/* clearfix：brand 左浮、nav 右浮，父容器不塌陷 */
+.site-header::after { content: ""; display: block; clear: both; }
+
+.brand { float: left; display: flex; align-items: center; }
+.brand .logo { font-size: 26px; margin-right: 10px; }
+.brand h1 {
+  margin: 0;
+  font-family: Georgia, "Songti SC", "宋体", serif;
+  font-size: 23px;
+  letter-spacing: .5px;
+  color: var(--ink);
+}
+
+/* 导航：右浮，胶囊高亮 */
+.site-nav { float: right; padding-top: 4px; }
+.site-nav a {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 7px 16px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  text-decoration: none;
+  border-radius: 999px;
+  transition: color .2s, background .2s;
+}
+.site-nav a:hover { color: var(--accent); background: var(--accent-soft); }
+.site-nav a.active {
+  color: var(--accent-dark);
+  background: var(--accent-soft);
+  box-shadow: inset 0 0 0 1px var(--accent-line);
+}
+
+/* ===================== 两栏布局：正文左(float)、侧栏右(float) ===================== */
+.layout {
+  max-width: var(--page-max);
+  margin: 24px auto 0;
+  padding: 0 var(--page-pad);
+}
+.layout::after { content: ""; display: block; clear: both; }
+.content { float: left; width: 68%; }
+.sidebar { float: right; width: 30%; }
+
+/* ===================== 检索区（form 三件套） ===================== */
+.search-panel {
+  padding: 18px 20px;
+  margin-bottom: 22px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-1);
+}
+.search-form { display: flex; align-items: flex-end; gap: 14px; flex-wrap: wrap; }
+.search-form .field { flex: 1 1 160px; }
+
+/* label：控件的文字说明，for 与 id 对上暗号，点文字也能聚焦 */
+.search-form label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 12.5px;
+  color: var(--ink-soft);
+}
+.search-form input,
+.search-form select {
+  width: 100%;
+  padding: 9px 12px;
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--ink);
+  background: var(--surface-soft);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  outline: none;
+  transition: border-color .2s, box-shadow .2s, background .2s;
+}
+.search-form input::placeholder { color: var(--ink-faint); }
+.search-form input:focus,
+.search-form select:focus {
+  background: var(--surface);
+  border-color: var(--accent-line);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+/* 主按钮：扁平豆绿，无渐变、无重阴影 */
+.btn,
+.search-btn,
+.add-cart {
+  padding: 9px 22px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+  color: #fff;
+  cursor: pointer;
+  background: var(--accent);
+  border: none;
+  border-radius: var(--radius-sm);
+  transition: background .2s, transform .15s var(--ease), box-shadow .2s;
+}
+.search-btn { flex: 0 0 auto; }
+.btn:hover,
+.search-btn:hover,
+.add-cart:hover { background: var(--accent-dark); box-shadow: 0 4px 14px rgba(79, 140, 119, .25); }
+.btn:active,
+.search-btn:active,
+.add-cart:active { transform: translateY(1px); }
+
+/* ===================== 区块标题 ===================== */
+.section-title {
+  position: relative;
+  margin: 0 0 16px;
+  padding-left: 13px;
+  font-family: Georgia, "Songti SC", "宋体", serif;
+  font-size: 19px;
+  color: var(--ink);
+}
+.section-title::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 4px;
+  height: 1.05em;
+  border-radius: 999px;
+  transform: translateY(-50%);
+  background: var(--accent);
+}
+
+/* ===================== 图书卡片：float 三列并排 ===================== */
+.cards::after { content: ""; display: block; clear: both; }   /* clearfix 防塌陷 */
+
+.book-card {
+  float: left;
+  width: 31.33%;          /* 留出右边距，三列刚好并排 */
+  margin: 0 3% 20px 0;
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-1);
+  transition: transform .25s var(--ease), box-shadow .25s, border-color .25s;
+}
+.book-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--line-strong);
+  box-shadow: var(--shadow-2);
+}
+.book-card:nth-child(3n) { margin-right: 0; }   /* 每行第三张去掉右边距 */
+
+/* 封面：低饱和色块 + 一个大字，柔和不刺眼 */
+.cover {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 128px;
+  font-family: Georgia, "Songti SC", "宋体", serif;
+  font-size: 40px;
+  color: #fff;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, .18);
+}
+.book-card:nth-child(1) .cover { background: linear-gradient(135deg, #6E9C8A, #527F6C); }
+.book-card:nth-child(2) .cover { background: linear-gradient(135deg, #8397BB, #63779B); }
+.book-card:nth-child(3) .cover { background: linear-gradient(135deg, #C39A6B, #A87C4E); }
+.book-card:nth-child(4) .cover { background: linear-gradient(135deg, #9E8CB4, #7E6C96); }
+.book-card:nth-child(5) .cover { background: linear-gradient(135deg, #C58C84, #A66B62); }
+.book-card:nth-child(6) .cover { background: linear-gradient(135deg, #7FA7A1, #5F8882); }
+
+.info { padding: 14px 16px 16px; }
+.book-title  { margin: 0 0 6px;  font-size: 17px; font-weight: 700; color: var(--ink); }
+.book-author { margin: 0 0 10px; font-size: 13px; color: var(--ink-soft); }
+.book-price  { margin: 0 0 12px; font-size: 17px; font-weight: 700; color: var(--accent-dark); }
+
+.add-cart { width: 100%; }
+
+/* ===================== 侧栏面板 ===================== */
+.panel {
+  padding: 16px 18px;
+  margin-bottom: 18px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-1);
+}
+.panel h3 {
+  margin: 0 0 10px;
+  padding-bottom: 8px;
+  font-family: Georgia, "Songti SC", "宋体", serif;
+  font-size: 16.5px;
+  color: var(--ink);
+  border-bottom: 1px solid var(--line);
+}
+.panel ul, .panel ol { margin: 0; padding-left: 20px; line-height: 2; }
+.panel li { color: var(--ink-soft); }
+.panel a { color: var(--accent-dark); text-decoration: none; }
+.panel a:hover { color: var(--accent); text-decoration: underline; }
+
+/* ===================== 页脚 ===================== */
+.site-footer {
+  margin-top: 20px;
+  padding: 20px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--ink-faint);
+  background: var(--surface-soft);
+  border-top: 1px solid var(--line);
+}
+.site-footer p { margin: 0; }
+
+/* ===================== 响应式：窄屏收成单列 ===================== */
+/* 中等宽度：正文收成单列，但顶栏仍保持「品牌左 · 导航右」一行 */
+@media (max-width: 760px) {
+  .content, .sidebar { float: none; width: 100%; }
+  .book-card { width: 100%; margin-right: 0; }
+  .search-form .field { flex: 1 1 100%; }
+  .search-btn { width: 100%; }
+}
+
+/* 更窄时才允许顶栏折行，避免一窄就「塌成两行」 */
+@media (max-width: 600px) {
+  .brand, .site-nav { float: none; }
+  .site-nav { margin-top: 10px; padding-top: 0; }
+  .site-nav a { margin-left: 0; margin-right: 8px; }
+}
+
+/* ===================== 优雅降级 & 无障碍 ===================== */
+/* 不支持 backdrop-filter：页头改为不透明白底 */
+@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .site-header { background: var(--surface); }
+}
+
+/* 尊重系统「减少动态效果」设置 */
+@media (prefers-reduced-motion: reduce) {
+  * { transition-duration: .01ms !important; animation: none !important; }
+}
