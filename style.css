@@ -7,7 +7,7 @@
    对应课程知识点：
      ① 类选择器为主力（.card / .book-card、.panel、.btn …）
      ② box-sizing: border-box 统一盒模型，加 padding 宽度不超标
-     ③ float 三列并排 + 父容器 clearfix 防塌陷
+     ③ CSS Grid 三列并排，窄屏自适应
    ============================================================ */
 
 /* ===================== 设计令牌 ===================== */
@@ -211,40 +211,43 @@ body {
   background: var(--accent);
 }
 
-/* ===================== 图书卡片：float 三列并排 ===================== */
-.cards::after { content: ""; display: block; clear: both; }   /* clearfix 防塌陷 */
+/* ===================== 图书卡片：三列紧凑网格 ===================== */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
 
 .book-card {
-  float: left;
-  width: 31.33%;          /* 留出右边距，三列刚好并排 */
-  margin: 0 3% 20px 0;
-  overflow: hidden;
+  position: relative;
+  min-width: 0;
+  padding: 10px;
   background: var(--glass);
   -webkit-backdrop-filter: blur(14px) saturate(140%);
   backdrop-filter: blur(14px) saturate(140%);
   border: 1px solid var(--glass-edge);
-  border-radius: var(--radius);
+  border-radius: 14px;
   box-shadow: var(--shadow-1), inset 0 1px 0 rgba(255, 255, 255, .9);
   transition: transform .25s var(--ease), box-shadow .25s, border-color .25s;
 }
 .book-card:hover {
   transform: translateY(-4px);
-  border-color: var(--line-strong);
-  box-shadow: var(--shadow-2);
+  border-color: var(--accent-line);
+  box-shadow: var(--shadow-2), inset 0 1px 0 rgba(255, 255, 255, .95);
 }
-.book-card:nth-child(3n) { margin-right: 0; }   /* 每行第三张去掉右边距 */
 
-/* 封面：低饱和色块 + 一个大字，柔和不刺眼 */
+/* 封面占位 */
 .cover {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 128px;
-  font-family: Georgia, "Songti SC", "宋体", serif;
-  font-size: 40px;
-  color: #fff;
-  text-shadow: 0 1px 6px rgba(0, 0, 0, .18);
+  height: 74px;
+  color: var(--ink-soft);
+  background: linear-gradient(135deg, rgba(79, 140, 119, .15), rgba(255, 255, 255, .5));
+  border: 1px solid rgba(255, 255, 255, .72);
+  border-radius: 6px;
+  font-size: 16px;
   overflow: hidden;
 }
 .cover::after {
@@ -252,22 +255,14 @@ body {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: linear-gradient(135deg, rgba(255, 255, 255, .3), transparent 42%, rgba(255, 255, 255, .06));
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35);
+  background: linear-gradient(135deg, rgba(255, 255, 255, .48), transparent 55%);
 }
-.book-card:nth-child(1) .cover { background: linear-gradient(135deg, #6E9C8A, #527F6C); }
-.book-card:nth-child(2) .cover { background: linear-gradient(135deg, #8397BB, #63779B); }
-.book-card:nth-child(3) .cover { background: linear-gradient(135deg, #C39A6B, #A87C4E); }
-.book-card:nth-child(4) .cover { background: linear-gradient(135deg, #9E8CB4, #7E6C96); }
-.book-card:nth-child(5) .cover { background: linear-gradient(135deg, #C58C84, #A66B62); }
-.book-card:nth-child(6) .cover { background: linear-gradient(135deg, #7FA7A1, #5F8882); }
 
-.info { padding: 14px 16px 16px; }
-.book-title  { margin: 0 0 6px;  font-size: 17px; font-weight: 700; color: var(--ink); }
-.book-author { margin: 0 0 10px; font-size: 13px; color: var(--ink-soft); }
-.book-price  { margin: 0 0 12px; font-size: 17px; font-weight: 700; color: var(--accent-dark); }
-
-.add-cart { width: 100%; }
+.info { padding-top: 8px; }
+.book-title  { display: inline; margin: 0; font-size: 16px; font-weight: 400; color: var(--ink); }
+.book-author { display: inline; margin: 0; font-size: 16px; color: var(--ink); }
+.book-author::before { content: "："; }
+.book-price  { margin: 6px 0 0; font-size: 17px; font-weight: 700; color: var(--accent-dark); }
 
 /* ===================== 侧栏面板 ===================== */
 .panel {
@@ -311,9 +306,16 @@ body {
 /* 中等宽度：正文收成单列，但顶栏仍保持「品牌左 · 导航右」一行 */
 @media (max-width: 760px) {
   .content, .sidebar { float: none; width: 100%; }
-  .book-card { width: 100%; margin-right: 0; }
   .search-form .field { flex: 1 1 100%; }
   .search-btn { width: 100%; }
+}
+
+@media (max-width: 520px) {
+  .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 360px) {
+  .cards { grid-template-columns: 1fr; }
 }
 
 /* 更窄时才允许顶栏折行，避免一窄就「塌成两行」 */
@@ -324,7 +326,7 @@ body {
 }
 
 /* ===================== 优雅降级 & 无障碍 ===================== */
-/* 不支持 backdrop-filter：页头改为不透明白底 */
+/* 不支持 backdrop-filter：玻璃表面改为不透明白底 */
 @supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
   .site-header,
   .search-panel,
