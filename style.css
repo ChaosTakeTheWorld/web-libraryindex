@@ -1,5 +1,5 @@
 /* ============================================================
-   style.css —— 悦读图书 首页外部样式表
+   style.css —— 启点图书 首页外部样式表
    主题：护眼暖白（Eye-friendly Warm White）
      · 底色用暖调米白，避免纯 #FFF 的强反光
      · 面板用纯白 + 极浅描边，正文用深灰而非纯黑，降低对比刺激
@@ -86,14 +86,16 @@ body {
 /* clearfix：brand 左浮、nav 右浮，父容器不塌陷 */
 .site-header::after { content: ""; display: block; clear: both; }
 
-.brand { float: left; display: flex; align-items: center; }
-.brand .logo { font-size: 26px; margin-right: 10px; }
+.brand { float: left; }
+.brand .logo { display: inline-block; font-size: 26px; margin-right: 10px; vertical-align: middle; }
 .brand h1 {
+  display: inline-block;
   margin: 0;
   font-family: Georgia, "Songti SC", "宋体", serif;
   font-size: 23px;
   letter-spacing: .5px;
   color: var(--ink);
+  vertical-align: middle;
 }
 
 /* 导航：右浮，胶囊高亮 */
@@ -136,8 +138,12 @@ body {
   border-radius: var(--radius);
   box-shadow: var(--shadow-1), inset 0 1px 0 rgba(255, 255, 255, .9);
 }
-.search-form { display: flex; align-items: flex-end; gap: 14px; flex-wrap: wrap; }
-.search-form .field { flex: 1 1 160px; }
+.search-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(160px, 1fr)) auto;
+  align-items: end;
+  gap: 14px;
+}
 
 /* label：控件的文字说明，for 与 id 对上暗号，点文字也能聚焦 */
 .search-form label {
@@ -182,7 +188,6 @@ body {
   border-radius: var(--radius-sm);
   transition: background .2s, transform .15s var(--ease), box-shadow .2s;
 }
-.search-btn { flex: 0 0 auto; }
 .btn:hover,
 .search-btn:hover,
 .add-cart:hover { background: var(--accent-dark); box-shadow: 0 4px 14px rgba(79, 140, 119, .25); }
@@ -239,9 +244,8 @@ body {
 /* 封面占位 */
 .cover {
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  place-items: center;
   height: 74px;
   color: var(--ink-soft);
   background: linear-gradient(135deg, rgba(79, 140, 119, .15), rgba(255, 255, 255, .5));
@@ -306,7 +310,7 @@ body {
 /* 中等宽度：正文收成单列，但顶栏仍保持「品牌左 · 导航右」一行 */
 @media (max-width: 760px) {
   .content, .sidebar { float: none; width: 100%; }
-  .search-form .field { flex: 1 1 100%; }
+  .search-form { grid-template-columns: 1fr; }
   .search-btn { width: 100%; }
 }
 
