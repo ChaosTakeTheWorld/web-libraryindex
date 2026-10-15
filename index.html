@@ -12,12 +12,18 @@
       <span class="logo" aria-hidden="true">📚</span>
       <h1>启点图书</h1>
     </div>
-    <nav class="site-nav" id="site-nav" aria-label="主导航">
-      <a class="active" href="#" aria-current="page">首页</a>
-      <a href="#">检索</a>
-      <a href="#">分类</a>
-      <a href="#">关于</a>
-    </nav>
+    <div class="header-actions">
+      <nav class="site-nav" id="site-nav" aria-label="主导航">
+        <a class="active" href="#" aria-current="page">首页</a>
+        <a href="#">检索</a>
+        <a href="#">分类</a>
+        <a href="#">关于</a>
+      </nav>
+      <!-- 购物车计数器：数字显示在页面上，真相存在 JS 变量 count 里 -->
+      <span class="cart" id="cart">购物车 (0)</span>
+      <!-- 暗色模式按钮：只切一个类名，颜色变化全部交给 CSS -->
+      <button class="btn-icon" id="modeBtn" type="button" aria-pressed="false">🌙 暗色</button>
+    </div>
   </header>
 
   <div class="layout">
@@ -51,6 +57,7 @@
               <h3 class="book-title">山</h3>
               <p class="book-author">刘慈欣</p>
               <p class="book-price">¥19.00</p>
+              <button class="addBtn add-cart" type="button">加入购物车</button>
             </div>
           </article>
 
@@ -60,6 +67,7 @@
               <h3 class="book-title">生死疲劳</h3>
               <p class="book-author">莫言</p>
               <p class="book-price">¥29.00</p>
+              <button class="addBtn add-cart" type="button">加入购物车</button>
             </div>
           </article>
 
@@ -70,6 +78,7 @@
               <h3 class="book-title">银河帝国</h3>
               <p class="book-author">艾萨克·阿西莫夫</p>
               <p class="book-price">¥48.00</p>
+              <button class="addBtn add-cart" type="button">加入购物车</button>
             </div>
           </article>
 
@@ -79,6 +88,7 @@
               <h3 class="book-title">嫌疑人X的献身</h3>
               <p class="book-author">东野圭吾</p>
               <p class="book-price">¥35.00</p>
+              <button class="addBtn add-cart" type="button">加入购物车</button>
             </div>
           </article>
 
@@ -88,6 +98,7 @@
               <h3 class="book-title">龙与少年游</h3>
               <p class="book-author">江南</p>
               <p class="book-price">¥25.00</p>
+              <button class="addBtn add-cart" type="button">加入购物车</button>
             </div>
           </article>
 
@@ -97,6 +108,7 @@
               <h3 class="book-title">霍乱时期的爱情</h3>
               <p class="book-author">加西亚·马尔克斯</p>
               <p class="book-price">¥45.00</p>
+              <button class="addBtn add-cart" type="button">加入购物车</button>
             </div>
           </article>
         </div>
@@ -138,8 +150,14 @@
     </aside>
   </div>
 
+  <!-- 回到顶部按钮：position:fixed 钉在右下角，点击滚回页面顶部 -->
+  <button class="top-btn" id="topBtn" type="button">回到顶部 ↑</button>
+
   <footer class="site-footer" id="site-footer">
     <p>© 2026 启点图书 · 联系:contact@qidian.example · 仅供课程作业演示</p>
   </footer>
+
+  <!-- JS 独立成外链文件：骨架(HTML)、皮肤(CSS)、大脑(JS) 三层分离 -->
+  <script src="main.js"></script>
 </body>
 </html>
