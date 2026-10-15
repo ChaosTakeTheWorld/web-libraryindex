@@ -4,10 +4,12 @@
      · 底色用暖调米白，避免纯 #FFF 的强反光
      · 面板用纯白 + 极浅描边，正文用深灰而非纯黑，降低对比刺激
      · 全局只保留一个低饱和的「豆绿」强调色，长时间阅读更舒服
-   对应课程知识点：
-     ① 类选择器为主力（.card / .book-card、.panel、.btn …）
-     ② box-sizing: border-box 统一盒模型，加 padding 宽度不超标
-     ③ CSS Grid 三列并排，窄屏自适应
+   布局：Flex 重构版（第 3 次课）
+     · 骨架：body 开 flex column，内容区 flex:1，页脚永远粘底
+     · 页头：两端对齐替代 float，菜单间距交给 gap
+     · 两栏：content 弹性伸缩 + sidebar 定宽不缩
+     · 网格：flex-wrap + gap + flex:1，卡片自动换行不塌陷
+     · 角标：父相子绝（.book-card relative + .badge-new absolute）
    ============================================================ */
 
 /* ===================== 设计令牌 ===================== */
@@ -50,12 +52,15 @@
 /* 统一盒模型：宽度包含 padding 与 border，算尺寸更直观 */
 * { box-sizing: border-box; }
 
-/* ===================== 页面底色 ===================== */
+/* ===================== 页面底色 + 整页骨架 ===================== */
 html { min-height: 100%; background: var(--bg); }
 
 body {
   margin: 0;
   min-height: 100vh;
+  /* 骨架套路：整页纵向排列，内容区自动撑满，页脚永远贴底 */
+  display: flex;
+  flex-direction: column;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
                "Microsoft YaHei", "微软雅黑", sans-serif;
   font-size: 15px;
@@ -68,11 +73,16 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* ===================== 页头 ===================== */
+/* ===================== 页头：Flex 两端对齐 ===================== */
 .site-header {
   position: sticky;
   top: 0;
   z-index: 10;
+  /* Flex 两端对齐：品牌贴左、导航贴右，一行代码替代 float */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
   /* 左右内边距跟随 .layout 的内容边界：顶栏文字与下方正文严格对齐 */
   padding: 14px var(--page-pad);
   padding-left: max(var(--page-pad), calc((100% - var(--page-max)) / 2 + var(--page-pad)));
@@ -83,26 +93,20 @@ body {
   border-bottom: 1px solid rgba(255, 255, 255, .82);
   box-shadow: 0 8px 24px rgba(58, 70, 60, .06);
 }
-/* clearfix：brand 左浮、nav 右浮，父容器不塌陷 */
-.site-header::after { content: ""; display: block; clear: both; }
 
-.brand { float: left; }
-.brand .logo { display: inline-block; font-size: 26px; margin-right: 10px; vertical-align: middle; }
+.brand { display: flex; align-items: center; gap: 10px; }
+.brand .logo { font-size: 26px; }
 .brand h1 {
-  display: inline-block;
   margin: 0;
   font-family: Georgia, "Songti SC", "宋体", serif;
   font-size: 23px;
   letter-spacing: .5px;
   color: var(--ink);
-  vertical-align: middle;
 }
 
-/* 导航：右浮，胶囊高亮 */
-.site-nav { float: right; padding-top: 4px; }
+/* 导航：Flex 排开，菜单项间距交给 gap，不再手写 margin */
+.site-nav { display: flex; align-items: center; gap: 8px; }
 .site-nav a {
-  display: inline-block;
-  margin-left: 6px;
   padding: 7px 16px;
   font-weight: 600;
   color: var(--ink-soft);
@@ -117,15 +121,20 @@ body {
   box-shadow: inset 0 0 0 1px var(--accent-line);
 }
 
-/* ===================== 两栏布局：正文左(float)、侧栏右(float) ===================== */
+/* ===================== 两栏布局：Flex 一行搞定 ===================== */
 .layout {
+  /* content 抢走剩余空间，sidebar 定宽不缩；间距用 gap，不再手算百分比 */
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  flex: 1;               /* 撑满 body 剩余高度，页脚由此永远贴底 */
   max-width: var(--page-max);
+  width: 100%;
   margin: 24px auto 0;
   padding: 0 var(--page-pad);
 }
-.layout::after { content: ""; display: block; clear: both; }
-.content { float: left; width: 68%; }
-.sidebar { float: right; width: 30%; }
+.content { flex: 1; min-width: 0; }        /* flex:1 等分地盘 */
+.sidebar { width: 30%; flex-shrink: 0; }   /* 定宽不参与伸缩 */
 
 /* ===================== 检索区（form 三件套） ===================== */
 .search-panel {
@@ -139,11 +148,12 @@ body {
   box-shadow: var(--shadow-1), inset 0 1px 0 rgba(255, 255, 255, .9);
 }
 .search-form {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(160px, 1fr)) auto;
-  align-items: end;
+  display: flex;
+  flex-wrap: wrap;
   gap: 14px;
+  align-items: flex-end;
 }
+.search-form .field { flex: 1; min-width: 160px; }
 
 /* label：控件的文字说明，for 与 id 对上暗号，点文字也能聚焦 */
 .search-form label {
@@ -216,16 +226,17 @@ body {
   background: var(--accent);
 }
 
-/* ===================== 图书卡片：三列紧凑网格 ===================== */
+/* ===================== 图书卡片：wrap + gap 弹性网格 ===================== */
 .cards {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
+  display: flex;
+  flex-wrap: wrap;   /* 放不下就换行 */
+  gap: 12px;         /* 行列间距一把抓 */
 }
 
 .book-card {
-  position: relative;
-  min-width: 0;
+  position: relative;   /* 1. 父：圈地盘，给「新书」角标当定位老爸 */
+  flex: 1;              /* 平分剩余空间 */
+  min-width: 220px;     /* 太窄就提前换行，绝不压扁内容 */
   padding: 10px;
   background: var(--glass);
   -webkit-backdrop-filter: blur(14px) saturate(140%);
@@ -241,9 +252,25 @@ body {
   box-shadow: var(--shadow-2), inset 0 1px 0 rgba(255, 255, 255, .95);
 }
 
+/* 「新书」角标：父相子绝，钉在卡片右上角（z-index 压住封面） */
+.badge-new {
+  position: absolute;   /* 2. 子：脱离文档流 */
+  top: 10px;            /* 3. 钉到右上角 */
+  right: 10px;
+  z-index: 1;
+  padding: 2px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: #fff;
+  background: var(--accent);
+  border-radius: 999px;
+  box-shadow: 0 2px 8px rgba(79, 140, 119, .35);
+}
+
 /* 封面占位 */
 .cover {
-  position: relative;
+  position: relative;   /* 给 ::after 的高光层当定位老爸 */
   display: grid;
   place-items: center;
   height: 74px;
@@ -306,27 +333,25 @@ body {
 }
 .site-footer p { margin: 0; }
 
-/* ===================== 响应式：窄屏收成单列 ===================== */
-/* 中等宽度：正文收成单列，但顶栏仍保持「品牌左 · 导航右」一行 */
-@media (max-width: 760px) {
-  .content, .sidebar { float: none; width: 100%; }
-  .search-form { grid-template-columns: 1fr; }
-  .search-btn { width: 100%; }
-}
-
-@media (max-width: 520px) {
-  .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-
-@media (max-width: 360px) {
-  .cards { grid-template-columns: 1fr; }
+/* ===================== 响应式：跟着屏幕变布局 ===================== */
+/* 中等宽度：侧栏整体下移到正文下方，正文占满一行 */
+@media (max-width: 900px) {
+  .layout { flex-direction: column; }
+  .content,
+  .sidebar { width: 100%; flex: none; }
+  .search-form .field { min-width: 200px; }
 }
 
 /* 更窄时才允许顶栏折行，避免一窄就「塌成两行」 */
 @media (max-width: 600px) {
-  .brand, .site-nav { float: none; }
-  .site-nav { margin-top: 10px; padding-top: 0; }
-  .site-nav a { margin-left: 0; margin-right: 8px; }
+  .site-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .site-nav { flex-wrap: wrap; }
+  /* 手机单列：解除卡片宽度下限，一列到底 */
+  .book-card { min-width: 100%; }
 }
 
 /* ===================== 优雅降级 & 无障碍 ===================== */
