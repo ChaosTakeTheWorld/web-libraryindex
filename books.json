@@ -1,0 +1,8 @@
+[
+  { "title": "山", "author": "刘慈欣", "price": 19.00, "inStock": true, "isNew": true },
+  { "title": "生死疲劳", "author": "莫言", "price": 29.00, "inStock": true, "isNew": false },
+  { "title": "银河帝国", "author": "艾萨克·阿西莫夫", "price": 48.00, "inStock": true, "isNew": true },
+  { "title": "嫌疑人X的献身", "author": "东野圭吾", "price": 35.00, "inStock": false, "isNew": false },
+  { "title": "龙与少年游", "author": "江南", "price": 25.00, "inStock": true, "isNew": false },
+  { "title": "霍乱时期的爱情", "author": "加西亚·马尔克斯", "price": 45.00, "inStock": true, "isNew": false }
+]

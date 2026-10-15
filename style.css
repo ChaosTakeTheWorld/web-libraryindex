@@ -13,6 +13,8 @@
    交互（第 4 次课）：
      · 暗色模式：JS 只切 body.dark 一个类，颜色全靠下面的变量覆盖
      · 回到顶部：fixed 钉在右下角，点击滚回顶部
+   数据驱动（第 5 次课）：
+     · 书卡由 books.json 渲染，新增 .empty / .stock-out 两个状态样式
    ============================================================ */
 
 /* ===================== 设计令牌 ===================== */
@@ -367,6 +369,30 @@ body.dark .site-footer {
   background: var(--accent);
   border-radius: 999px;
   box-shadow: 0 2px 8px rgba(79, 140, 119, .35);
+}
+
+/* 搜索无结果的提示（数据驱动版：空结果也是一种状态） */
+.empty {
+  width: 100%;
+  margin: 0;
+  padding: 34px 0;
+  text-align: center;
+  font-size: 14.5px;
+  color: var(--ink-soft);
+  background: var(--surface-soft);
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius);
+}
+
+/* 「暂无库存」标记：低饱和陶土色，只提示不刺眼 */
+.stock-out {
+  margin: 10px 0 0;
+  padding: 7px 0;
+  font-size: 13.5px;
+  text-align: center;
+  color: #A8745B;
+  background: rgba(168, 116, 91, .10);
+  border-radius: var(--radius-sm);
 }
 
 /* 封面占位 */
